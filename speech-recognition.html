@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speech Recognition Sample</title>
+</head>
+<body>
+<div>
+<button id="start">認識開始</button>
+</div>
+<div style="width=100%;">
+<textarea id="result" style="width:100%;" rows="10"></textarea>
+</div>
+<div style="width=100%;">
+<textarea id="status" style="width:100%;" rows="4"></textarea>
+</div>
+
+<script>
+window.addEventListener('DOMContentLoaded', (ev) => {
+  const startButton = document.getElementById('start')
+  const resultArea = document.getElementById('result')
+  const statusArea = document.getElementById('status')
+  const setResult = (text) => { resultArea.textContent = text }
+  if (!('SpeechRecognition' in window)) {
+    setResult('ブラウザが音声認識に対応していません。')
+    return
+  }
+  const addLog = (message) => {
+    statusArea.textContent = message + '\n' + statusArea.textContent
+  }
+  const recognizer = new SpeechRecognition()
+  recognizer.continuous = false
+  recognizer.interimResults = false
+  recognizer.lang = 'ja'
+
+  recignizer.onstart = () => { addLog('on-start') }
+  recignizer.onaudiostart = () => { addLog('on-audio-start') }
+  recignizer.onsoundstart = () => { addLog('on-audio-start') }
+  recignizer.onspeechstart = () => { addLog('on-speech-start') }
+  recignizer.onspeechend = () => { addLog('on-speech-end') }
+  recignizer.onsoundend = () => { addLog('on-sound-end') }
+  recignizer.onaudioend = () => { addLog('on-audio-end') }
+  recignizer.onend = () => { addLog('on-end') }
+
+  recignizer.onerror = (ev) => { addLog(`on-error : ${ev}`) }
+  recignizer.onnomatch = () => { addLog('on-no-match') }
+
+  recignizer.onresult = (ev) => {
+    addLog(`on-result : resultIndex=${ev.resultIndex} #=${ev.results.length}`)
+    for (let i=0 ; i<ev.results.length ; i++) {
+      addLog(`result(${i}) final:${ev.results[i].isFinal} text:${ev.results[i].transcript}`)
+    }
+    startButton.disabled = false
+  }
+
+  startButton.addEventListener('click', (ev) => {
+    recognizer.start()
+    startButton.disabled = true
+  })
+})
+</script>
+
+</body>
+</html>
