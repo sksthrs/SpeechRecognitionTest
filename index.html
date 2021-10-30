@@ -22,14 +22,14 @@ window.addEventListener('DOMContentLoaded', (ev) => {
   const resultArea = document.getElementById('result')
   const statusArea = document.getElementById('status')
   const setResult = (text) => { resultArea.textContent = text }
-  if (!('SpeechRecognition' in window)) {
+  if (!('SpeechRecognition' in window) && !('webkitSpeechRecognition' in window) {
     setResult('ブラウザが音声認識に対応していません。')
     return
   }
   const addLog = (message) => {
     statusArea.textContent = message + '\n' + statusArea.textContent
   }
-  const recognizer = new SpeechRecognition()
+  const recognizer = new SpeechRecognition() || new webkitSpeechRecognition()
   recognizer.continuous = false
   recognizer.interimResults = false
   recognizer.lang = 'ja'
