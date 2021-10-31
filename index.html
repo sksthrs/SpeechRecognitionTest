@@ -13,7 +13,7 @@
 <textarea id="result" style="width:100%;" rows="10"></textarea>
 </div>
 <div style="width=100%;">
-<textarea id="status" style="width:100%;" rows="4"></textarea>
+<textarea id="status" style="width:100%;" rows="10"></textarea>
 </div>
 
 <script>
@@ -22,35 +22,41 @@ window.addEventListener('DOMContentLoaded', (ev) => {
   const resultArea = document.getElementById('result')
   const statusArea = document.getElementById('status')
   const setResult = (text) => { resultArea.textContent = text }
-  if (!('SpeechRecognition' in window) && !('webkitSpeechRecognition' in window) {
+  const recognizer =
+    ('SpeechRecognition' in window) ? new SpeechRecognition() : 
+    ('webkitSpeechRecognition' in window) ? new webkitSpeechRecognition() :
+    null
+  if (recognizer == null) {
     setResult('ブラウザが音声認識に対応していません。')
     return
   }
   const addLog = (message) => {
     statusArea.textContent = message + '\n' + statusArea.textContent
   }
-  const recognizer = new SpeechRecognition() || new webkitSpeechRecognition()
   recognizer.continuous = false
   recognizer.interimResults = false
   recognizer.lang = 'ja'
 
-  recignizer.onstart = () => { addLog('on-start') }
-  recignizer.onaudiostart = () => { addLog('on-audio-start') }
-  recignizer.onsoundstart = () => { addLog('on-audio-start') }
-  recignizer.onspeechstart = () => { addLog('on-speech-start') }
-  recignizer.onspeechend = () => { addLog('on-speech-end') }
-  recignizer.onsoundend = () => { addLog('on-sound-end') }
-  recignizer.onaudioend = () => { addLog('on-audio-end') }
-  recignizer.onend = () => { addLog('on-end') }
+  recognizer.onstart = () => { addLog('on-start') }
+  recognizer.onaudiostart = () => { addLog('on-audio-start') }
+  recognizer.onsoundstart = () => { addLog('on-audio-start') }
+  recognizer.onspeechstart = () => { addLog('on-speech-start') }
+  recognizer.onspeechend = () => { addLog('on-speech-end') }
+  recognizer.onsoundend = () => { addLog('on-sound-end') }
+  recognizer.onaudioend = () => { addLog('on-audio-end') }
+  recognizer.onend = () => { addLog('on-end') }
 
-  recignizer.onerror = (ev) => { addLog(`on-error : ${ev}`) }
-  recignizer.onnomatch = () => { addLog('on-no-match') }
+  recognizer.onerror = (ev) => { addLog(`on-error : ${ev}`) }
+  recognizer.onnomatch = () => { addLog('on-no-match') }
 
-  recignizer.onresult = (ev) => {
+  recognizer.onresult = (ev) => {
     addLog(`on-result : resultIndex=${ev.resultIndex} #=${ev.results.length}`)
+    phrase = ''
     for (let i=0 ; i<ev.results.length ; i++) {
-      addLog(`result(${i}) final:${ev.results[i].isFinal} text:${ev.results[i].transcript}`)
+      addLog(`result(${i}) final:${ev.results[i].isFinal} text:${ev.results[i][0].transcript}`)
+      phrase += ev.results[i][0].transcript + '。'
     }
+    setResult(phrase)
     startButton.disabled = false
   }
 
