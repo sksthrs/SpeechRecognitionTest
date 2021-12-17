@@ -8,11 +8,13 @@
 <body>
 <div>
 <button id="start">認識開始</button>
+<br><label for="is_continuous">連続認識させる</label>
+<input type="checkbox" id="is_continuous" name="is_continuous" value="is_continuous">
 </div>
-<div style="width=100%;">
+<div style="width:100%;">
 <textarea id="result" style="width:100%;" rows="10"></textarea>
 </div>
-<div style="width=100%;">
+<div style="width:100%;">
 <textarea id="status" style="width:100%;" rows="10"></textarea>
 </div>
 
@@ -21,7 +23,14 @@ window.addEventListener('DOMContentLoaded', (ev) => {
   const startButton = document.getElementById('start')
   const resultArea = document.getElementById('result')
   const statusArea = document.getElementById('status')
+  const isContinuous = document.getElementById('is_continuous')
+
   const setResult = (text) => { resultArea.textContent = text }
+  const addLog = (message) => {
+    //statusArea.textContent = message + '\n' + statusArea.textContent
+    statusArea.textContent =  statusArea.textContent + '\n' + message
+  }
+
   const recognizer =
     ('SpeechRecognition' in window) ? new SpeechRecognition() : 
     ('webkitSpeechRecognition' in window) ? new webkitSpeechRecognition() :
@@ -30,30 +39,36 @@ window.addEventListener('DOMContentLoaded', (ev) => {
     setResult('ブラウザが音声認識に対応していません。')
     return
   }
-  const addLog = (message) => {
-    statusArea.textContent = message + '\n' + statusArea.textContent
+
+  const onContinuousChanged = () => {
+    if (recognizer != null) {
+      recognizer.continuous = isContinuous.checked
+      recognizer.interimResults = isContinuous.checked
+      addLog(`changed setting: is_continuous = ${recognizer.isContinuous}`)
+    }
   }
-  recognizer.continuous = false
-  recognizer.interimResults = false
+  
+  recognizer.continuous = true
+  recognizer.interimResults = true
   recognizer.lang = 'ja'
 
-  recognizer.onstart = () => { addLog('on-start') }
-  recognizer.onaudiostart = () => { addLog('on-audio-start') }
-  recognizer.onsoundstart = () => { addLog('on-audio-start') }
-  recognizer.onspeechstart = () => { addLog('on-speech-start') }
-  recognizer.onspeechend = () => { addLog('on-speech-end') }
-  recognizer.onsoundend = () => { addLog('on-sound-end') }
-  recognizer.onaudioend = () => { addLog('on-audio-end') }
-  recognizer.onend = () => { addLog('on-end') }
+  recognizer.onstart = () => { addLog('onstart') }
+  recognizer.onaudiostart = () => { addLog('onaudiostart') }
+  recognizer.onsoundstart = () => { addLog('onaudiostart') }
+  recognizer.onspeechstart = () => { addLog('onspeechstart') }
+  recognizer.onspeechend = () => { addLog('onspeechend') }
+  recognizer.onsoundend = () => { addLog('onsoundend') }
+  recognizer.onaudioend = () => { addLog('onaudioend') }
+  recognizer.onend = () => { addLog('onend') }
 
-  recognizer.onerror = (ev) => { addLog(`on-error : ${ev}`) }
-  recognizer.onnomatch = () => { addLog('on-no-match') }
+  recognizer.onerror = (ev) => { addLog(`onerror : event.error=${ev.error}`) }
+  recognizer.onnomatch = () => { addLog('onnomatch') }
 
   recognizer.onresult = (ev) => {
-    addLog(`on-result : resultIndex=${ev.resultIndex} #=${ev.results.length}`)
+    addLog(`onresult : event.resultIndex=${ev.resultIndex} event.results.length=${ev.results.length}`)
     phrase = ''
     for (let i=0 ; i<ev.results.length ; i++) {
-      addLog(`result(${i}) final:${ev.results[i].isFinal} text:${ev.results[i][0].transcript}`)
+      addLog(`event.results[${i}] isFinal=${ev.results[i].isFinal} results[${i}][0] transcript=${ev.results[i][0].transcript} confidence=${ev.results[i][0].confidence}` )
       phrase += ev.results[i][0].transcript + '。'
     }
     setResult(phrase)
@@ -61,8 +76,16 @@ window.addEventListener('DOMContentLoaded', (ev) => {
   }
 
   startButton.addEventListener('click', (ev) => {
+    addLog(`start recognizing: is_continuous = ${recognizer.isContinuous}`)
     recognizer.start()
     startButton.disabled = true
+  })
+
+  isContinuous.addEventListener('changed', ev => {
+    onContinuousChanged()
+  })
+  isContinuous.addEventListener('input', ev => {
+    onContinuousChanged()
   })
 })
 </script>
