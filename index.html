@@ -7,10 +7,10 @@
 </head>
 <body>
 <div>
-<button id="start">認識開始</button>
-<button id="abort">認識停止</button>
-<button id="stop">認識終了</button>
-<br><label for="is_continuous">連続認識させる</label>
+<button id="start">Start Recognition</button>
+<button id="abort">Abort Recognition</button>
+<button id="stop">Stop Recognition</button>
+<br><label for="is_continuous">Continuous Recognition</label>
 <input type="checkbox" id="is_continuous" name="is_continuous" value="is_continuous">
 </div>
 <div style="width:100%;">
@@ -41,7 +41,7 @@ window.addEventListener('DOMContentLoaded', (ev) => {
     ('webkitSpeechRecognition' in window) ? new webkitSpeechRecognition() :
     null
   if (recognizer == null) {
-    setResult('ブラウザが音声認識に対応していません。')
+    setResult('Your browser does not support speech recognition.')
     return
   }
 
@@ -55,7 +55,6 @@ window.addEventListener('DOMContentLoaded', (ev) => {
   
   recognizer.continuous = false
   recognizer.interimResults = false
-  recognizer.lang = 'ja'
 
   recognizer.onstart = () => { addLog('onstart') }
   recognizer.onaudiostart = () => { addLog('onaudiostart') }
