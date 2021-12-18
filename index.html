@@ -8,6 +8,8 @@
 <body>
 <div>
 <button id="start">認識開始</button>
+<button id="abort">認識停止</button>
+<button id="stop">認識終了</button>
 <br><label for="is_continuous">連続認識させる</label>
 <input type="checkbox" id="is_continuous" name="is_continuous" value="is_continuous">
 </div>
@@ -21,9 +23,12 @@
 <script>
 window.addEventListener('DOMContentLoaded', (ev) => {
   const startButton = document.getElementById('start')
+  const abortButton = document.getElementById('abort')
+  const stopButton = document.getElementById('stop')
   const resultArea = document.getElementById('result')
   const statusArea = document.getElementById('status')
   const isContinuous = document.getElementById('is_continuous')
+  statusArea.textContent = 'UserAgent : ' + navigator.userAgent + '\n'
 
   const setResult = (text) => { resultArea.textContent = text }
   const addLog = (message) => {
@@ -44,7 +49,7 @@ window.addEventListener('DOMContentLoaded', (ev) => {
     if (recognizer != null) {
       recognizer.continuous = isContinuous.checked
       recognizer.interimResults = isContinuous.checked
-      addLog(`changed setting: is_continuous = ${recognizer.continuous}`)
+      addLog(`changed setting: continuous = ${recognizer.continuous}`)
     }
   }
   
@@ -72,13 +77,21 @@ window.addEventListener('DOMContentLoaded', (ev) => {
       phrase += ev.results[i][0].transcript + '。'
     }
     setResult(phrase)
-    startButton.disabled = false
   }
 
   startButton.addEventListener('click', (ev) => {
-    addLog(`start recognizing: is_continuous = ${recognizer.isContinuous}`)
+    addLog(`start recognizing: continuous = ${recognizer.continuous}`)
     recognizer.start()
-    startButton.disabled = true
+  })
+
+  abortButton.addEventListener('click', (ev) => {
+    addLog(`abort recognizing`)
+    recognizer.abort()
+  })
+
+  stopButton.addEventListener('click', (ev) => {
+    addLog(`stop recognizing`)
+    recognizer.stop()
   })
 
   isContinuous.addEventListener('changed', ev => {
