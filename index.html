@@ -44,12 +44,12 @@ window.addEventListener('DOMContentLoaded', (ev) => {
     if (recognizer != null) {
       recognizer.continuous = isContinuous.checked
       recognizer.interimResults = isContinuous.checked
-      addLog(`changed setting: is_continuous = ${recognizer.isContinuous}`)
+      addLog(`changed setting: is_continuous = ${recognizer.continuous}`)
     }
   }
   
-  recognizer.continuous = true
-  recognizer.interimResults = true
+  recognizer.continuous = false
+  recognizer.interimResults = false
   recognizer.lang = 'ja'
 
   recognizer.onstart = () => { addLog('onstart') }
