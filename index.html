@@ -55,6 +55,7 @@ window.addEventListener('DOMContentLoaded', (ev) => {
   
   recognizer.continuous = false
   recognizer.interimResults = false
+  recognizer.lang = 'ja-JP'
 
   recognizer.onstart = () => { addLog('onstart') }
   recognizer.onaudiostart = () => { addLog('onaudiostart') }
