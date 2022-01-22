@@ -74,7 +74,7 @@ window.addEventListener('DOMContentLoaded', (ev) => {
     phrase = ''
     for (let i=0 ; i<ev.results.length ; i++) {
       addLog(`event.results[${i}] isFinal=${ev.results[i].isFinal} results[${i}][0] transcript=${ev.results[i][0].transcript} confidence=${ev.results[i][0].confidence}` )
-      phrase += ev.results[i][0].transcript + '。'
+      phrase += ev.results[i][0].transcript
     }
     setResult(phrase)
   }
