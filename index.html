@@ -66,7 +66,7 @@ window.addEventListener('DOMContentLoaded', (ev) => {
   recognizer.onaudioend = () => { addLog('onaudioend') }
   recognizer.onend = () => { addLog('onend') }
 
-  recognizer.onerror = (ev) => { addLog(`onerror : event.error=${ev.error}`) }
+  recognizer.onerror = (ev) => { addLog(`onerror : ev-type=${ev.type} event.error[${ev.error}](type=${typeof ev.error}/class=${Object.prototype.toString.call(ev.error)}) message[${ev.message}]`) }
   recognizer.onnomatch = () => { addLog('onnomatch') }
 
   recognizer.onresult = (ev) => {
